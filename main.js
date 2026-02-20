@@ -68,15 +68,15 @@ renderer.setSize(window.innerWidth, window.innerHeight);
 renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
-renderer.toneMappingExposure = 1.2; // Brighter overall exposure
+renderer.toneMappingExposure = 1.4; // A touch brighter
 document.body.appendChild(renderer.domElement);
 
 // --- Lighting ---
-const ambientLight = new THREE.AmbientLight(0xffffff, 1.5); // Strong ambient for even lighting
+const ambientLight = new THREE.AmbientLight(0xffffff, 1.8); // A touch brighter ambient
 scene.add(ambientLight);
 
 // Add hemisphere light for natural sky/ground fill
-const hemiLight = new THREE.HemisphereLight(0x87CEEB, 0x3a5f0b, 0.6);
+const hemiLight = new THREE.HemisphereLight(0x87CEEB, 0x3a5f0b, 0.8); // Slightly stronger fill
 scene.add(hemiLight);
 
 const sunLight = new THREE.DirectionalLight(0xffffff, 2.5); // Softened directional
@@ -1015,7 +1015,7 @@ function createSky() {
         mieDirectionalG: 0.7,
         elevation: 55, // High sun for bright, even lighting
         azimuth: 40,
-        exposure: 1.2 // Bright ambient exposure
+        exposure: 1.4 // Match renderer exposure
     };
 
     const uniforms = sky.material.uniforms;
@@ -1140,10 +1140,11 @@ scene.add(fenceGroup);
 // --- Animation Loop ---
 const controls = new OrbitControls(camera, renderer.domElement);
 controls.enableDamping = true;
-controls.dampingFactor = 0.1;
+controls.dampingFactor = 0.08;
 controls.minDistance = 10;   // Don't zoom closer than 10m
 controls.maxDistance = 300;  // Don't zoom further than 300m
-controls.zoomSpeed = 0.8;   // Slightly slower for smoother zoom
+controls.zoomSpeed = 0.3;   // Much slower for smooth scroll zoom
+controls.rotateSpeed = 0.5; // Smoother rotation
 controls.maxPolarAngle = Math.PI / 2.05; // Prevent going below ground
 
 window.addEventListener('resize', onWindowResize, false);
