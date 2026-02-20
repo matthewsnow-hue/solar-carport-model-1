@@ -1162,6 +1162,11 @@ if (elevSlider && azimSlider) {
 // --- Animation Loop ---
 const controls = new OrbitControls(camera, renderer.domElement);
 controls.enableDamping = true;
+controls.dampingFactor = 0.1;
+controls.minDistance = 10;   // Don't zoom closer than 10m
+controls.maxDistance = 300;  // Don't zoom further than 300m
+controls.zoomSpeed = 0.8;   // Slightly slower for smoother zoom
+controls.maxPolarAngle = Math.PI / 2.05; // Prevent going below ground
 
 window.addEventListener('resize', onWindowResize, false);
 function onWindowResize() {
