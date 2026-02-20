@@ -68,14 +68,18 @@ renderer.setSize(window.innerWidth, window.innerHeight);
 renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
-renderer.toneMappingExposure = 0.5;
+renderer.toneMappingExposure = 1.2; // Brighter overall exposure
 document.body.appendChild(renderer.domElement);
 
 // --- Lighting ---
-const ambientLight = new THREE.AmbientLight(0xffffff, 0.8); // Increased ambient
+const ambientLight = new THREE.AmbientLight(0xffffff, 1.5); // Strong ambient for even lighting
 scene.add(ambientLight);
 
-const sunLight = new THREE.DirectionalLight(0xffffff, 3.5); // Stronger sun
+// Add hemisphere light for natural sky/ground fill
+const hemiLight = new THREE.HemisphereLight(0x87CEEB, 0x3a5f0b, 0.6);
+scene.add(hemiLight);
+
+const sunLight = new THREE.DirectionalLight(0xffffff, 2.5); // Softened directional
 sunLight.position.set(50, 100, 50);
 sunLight.castShadow = true;
 sunLight.shadow.mapSize.width = 4096;
@@ -1009,9 +1013,9 @@ function createSky() {
         rayleigh: 0.5, // Less scattering, deep blue
         mieCoefficient: 0.005,
         mieDirectionalG: 0.7,
-        elevation: 38, // Slightly higher for brighter overall light
-        azimuth: 40, // Flipped to opposite side - sun from upper right
-        exposure: 0.9 // Bright enough for good panel reflections
+        elevation: 55, // High sun for bright, even lighting
+        azimuth: 40,
+        exposure: 1.2 // Bright ambient exposure
     };
 
     const uniforms = sky.material.uniforms;
@@ -1131,33 +1135,7 @@ scene.add(fenceGroup);
 // Note: Lighting is already set up at the top of the file.
 // Adjustments can be made there if needed.
 
-// --- Sun Position Sliders ---
-function updateSunPosition(elevation, azimuth) {
-    const phi = THREE.MathUtils.degToRad(90 - elevation);
-    const theta = THREE.MathUtils.degToRad(azimuth);
-
-    const sunPos = new THREE.Vector3();
-    sunPos.setFromSphericalCoords(1, phi, theta);
-
-    sky.material.uniforms['sunPosition'].value.copy(sunPos);
-    sunLight.position.set(sunPos.x * 100, sunPos.y * 100, sunPos.z * 100);
-}
-
-const elevSlider = document.getElementById('sun-elevation');
-const azimSlider = document.getElementById('sun-azimuth');
-const elevVal = document.getElementById('elev-val');
-const azimVal = document.getElementById('azim-val');
-
-if (elevSlider && azimSlider) {
-    elevSlider.addEventListener('input', () => {
-        elevVal.textContent = elevSlider.value + '°';
-        updateSunPosition(Number(elevSlider.value), Number(azimSlider.value));
-    });
-    azimSlider.addEventListener('input', () => {
-        azimVal.textContent = azimSlider.value + '°';
-        updateSunPosition(Number(elevSlider.value), Number(azimSlider.value));
-    });
-}
+// Sun sliders removed — using fixed bright ambient lighting instead
 
 // --- Animation Loop ---
 const controls = new OrbitControls(camera, renderer.domElement);
